@@ -1567,3 +1567,11 @@ config AF_NOISE_ELIMINATION
 	default n
 	help
 	Enable it only for produts that suffering AF resonance noise.
+
+config ASMP
+	bool "Multi-core automatic hotplug support"
+	depends on SMP && HOTPLUG_CPU
+	default n
+	help
+	  Automatically hotplugs the multiple cpu cores on and off
+	  based on cpu load and suspend state.
