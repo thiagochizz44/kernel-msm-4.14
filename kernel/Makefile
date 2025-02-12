@@ -122,6 +122,8 @@ $(obj)/configs.o: $(obj)/config_data.h
 targets += config_data.gz
 ifeq ($(CONFIG_LIBER_DTB),y)
 $(obj)/config_data.gz: arch/arm64/configs/vendor/liber-stock_defconfig FORCE
+else ifeq ($(CONFIG_PARKER_DTB),y)
+$(obj)/config_data.gz: arch/arm64/configs/vendor/parker-stock_defconfig FORCE
 else
 $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
 endif
