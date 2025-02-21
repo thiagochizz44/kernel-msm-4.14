@@ -376,7 +376,7 @@ static int __msm_sdw_reg_read(struct msm_sdw_priv *msm_sdw, unsigned short reg,
 			((u8 *)dest)[i] = temp;
 		}
 		msm_sdw->int_mclk1_enabled = true;
-		schedule_delayed_work(&msm_sdw->disable_int_mclk1_work, 50);
+		queue_delayed_work(system_power_efficient_wq, &msm_sdw->disable_int_mclk1_work, 50);
 		goto unlock_exit;
 	}
 	for (i = 0; i < bytes; i++)  {
@@ -419,7 +419,7 @@ static int __msm_sdw_reg_write(struct msm_sdw_priv *msm_sdw, unsigned short reg,
 			ret = msm_sdw_ahb_write_device(msm_sdw, reg + (4 * i),
 						       &((u8 *)src)[i]);
 		msm_sdw->int_mclk1_enabled = true;
-		schedule_delayed_work(&msm_sdw->disable_int_mclk1_work, 50);
+		queue_delayed_work(system_power_efficient_wq, &msm_sdw->disable_int_mclk1_work, 50);
 		goto unlock_exit;
 	}
 	for (i = 0; i < bytes; i++)
@@ -1649,10 +1649,10 @@ static const struct snd_kcontrol_new msm_sdw_snd_controls[] = {
 		msm_sdw_spkr_boost_stage_enum,
 		msm_sdw_spkr_right_boost_stage_get,
 		msm_sdw_spkr_right_boost_stage_put),
-	SOC_SINGLE_S8_TLV("RX4 Digital Volume", MSM_SDW_RX7_RX_VOL_CTL,
-		-84, 40, digital_gain),
-	SOC_SINGLE_S8_TLV("RX5 Digital Volume", MSM_SDW_RX8_RX_VOL_CTL,
-		-84, 40, digital_gain),
+	SOC_SINGLE_SX_TLV("RX4 Digital Volume", MSM_SDW_RX7_RX_VOL_CTL,
+		0, -84, 40, digital_gain),
+	SOC_SINGLE_SX_TLV("RX5 Digital Volume", MSM_SDW_RX8_RX_VOL_CTL,
+		0, -84, 40, digital_gain),
 	SOC_SINGLE_EXT("COMP1 Switch", SND_SOC_NOPM, COMP1, 1, 0,
 		msm_sdw_get_compander, msm_sdw_set_compander),
 	SOC_SINGLE_EXT("COMP2 Switch", SND_SOC_NOPM, COMP2, 1, 0,

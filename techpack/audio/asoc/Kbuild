@@ -59,19 +59,19 @@ ifeq ($(KERNEL_BUILD), 0)
 		export
 		INCS    +=  -include $(AUDIO_ROOT)/config/qcs405autoconf.h
 	endif
-	ifneq (,$(filter liber%, $(TARGET_PRODUCT)))
+        ifeq ($(CONFIG_LIBER_DTB), y)
 		INCS    +=  -include $(AUDIO_ROOT)/config/liberautoconf.h
 	endif
-	ifneq (,$(filter hanoi%, $(TARGET_PRODUCT)))
+        ifeq ($(CONFIG_HANOI_DTB), y)
 		INCS    +=  -include $(AUDIO_ROOT)/config/hanoiautoconf.h
 	endif
-	ifneq (,$(filter odessa%, $(TARGET_PRODUCT)))
+        ifeq ($(CONFIG_ODESSA_DTB), y)
 		INCS    +=  -include $(AUDIO_ROOT)/config/odessaautoconf.h
 	endif
-	ifneq (,$(filter bornr%, $(TARGET_PRODUCT)))
+        ifeq ($(CONFIG_BORNR_DTB), y)
 		INCS    +=  -include $(AUDIO_ROOT)/config/bornrautoconf.h
 	endif
-	ifneq (,$(filter minsk%, $(TARGET_PRODUCT)))
+        ifeq ($(CONFIG_MINSK_DTB), y)
 		INCS    +=  -include $(AUDIO_ROOT)/config/minskautoconf.h
 	endif
 endif
@@ -101,8 +101,8 @@ COMMON_DIR :=	include
 COMMON_INC :=	-I$(AUDIO_ROOT)/$(COMMON_DIR)
 
 ########### MADERA ############
-MADERA_INC := -I$(ANDROID_BUILD_TOP)/motorola/kernel/modules/include \
-	-I$(ANDROID_BUILD_TOP)/motorola/kernel/modules/sound/soc/codecs
+MADERA_INC := -Iinclude \
+	-Isound/soc/codecs
 
 ############ ASoC Drivers ############
 
@@ -203,14 +203,13 @@ CDEFINES +=	-DANI_LITTLE_BYTE_ENDIAN \
 		-DANI_OS_TYPE_ANDROID=6 \
 		-DPTT_SOCK_SVC_ENABLE \
 		-Wall\
-		-Werror\
 		-D__linux__
 
-ifneq (,$(filter foles%, $(TARGET_PRODUCT)))
+ifeq ($(CONFIG_FOLES_DTB), y)
 CDEFINES += -DCONFIG_SEC_MI2S_MODS
 endif
 
-ifneq (,$(filter bornr%, $(TARGET_PRODUCT)))
+ifeq ($(CONFIG_BORNR_DTB), y)
 CDEFINES += -DCONFIG_TAS25XX_ALGO
 endif
 
@@ -269,3 +268,6 @@ machine_dlkm-y := $(MACHINE_OBJS)
 
 obj-$(CONFIG_SND_SOC_CPE) += cpe_lsm_dlkm.o
 cpe_lsm_dlkm-y := $(CPE_LSM_OBJS)
+
+# inject some build related information
+DEFINES += -DBUILD_TIMESTAMP=\"$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')\"
